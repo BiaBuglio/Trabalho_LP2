@@ -1,0 +1,13 @@
+com\mycompany\consultapsicologica\security\CustomUserDetailsService.class
+com\mycompany\consultapsicologica\controller\AuthController.class
+com\mycompany\consultapsicologica\security\WebSecurityConfig.class
+com\mycompany\consultapsicologica\model\Perfil.class
+com\mycompany\consultapsicologica\ConsultaPsicologicaApplication.class
+com\mycompany\consultapsicologica\controller\CadastroController.class
+com\mycompany\consultapsicologica\config\DataInitializer.class
+com\mycompany\consultapsicologica\repository\UsuarioRepository.class
+com\mycompany\consultapsicologica\service\UsuarioService.class
+com\mycompany\consultapsicologica\model\Usuario.class
+com\mycompany\consultapsicologica\controller\UsuarioController.class
+login.class
+com\mycompany\consultapsicologica\controller\HomeController.class
