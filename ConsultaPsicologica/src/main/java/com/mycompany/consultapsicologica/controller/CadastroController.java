@@ -13,6 +13,6 @@ public class CadastroController {
     @GetMapping
     public String mostrarFormularioCadastro(Model model) {
         model.addAttribute("usuario", new Usuario());
-        return "cadastro/formulario"; // Este template precisa ser criado
+        return "cadastro/form";
     }
 }

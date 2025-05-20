@@ -19,7 +19,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false)
-    private String senha;  // Corrigido de "semia" para "senha"
+    private String senha;
 
     @Column(nullable = false)
     private String nome;

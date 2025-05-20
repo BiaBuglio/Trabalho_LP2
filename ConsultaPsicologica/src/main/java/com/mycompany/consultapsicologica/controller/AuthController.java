@@ -15,12 +15,12 @@ public class AuthController {
 
     @GetMapping("/cadastro")
     public String cadastro() {
-        return "auth/cadastro"; // Você precisará criar este template
+        return "auth/cadastro";
     }
 
     @GetMapping("/esqueci-senha")
     public String esqueciSenha() {
-        return "auth/esqueci-senha"; // Você precisará criar este template
+        return "auth/esqueci-senha";
     }
 
     @GetMapping("/access-denied")

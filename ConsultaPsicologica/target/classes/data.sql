@@ -31,3 +31,46 @@ CREATE TABLE IF NOT EXISTS log_acessos (
     acao VARCHAR(20) NOT NULL CHECK (acao IN ('LOGIN','LOGOUT','FALHA_LOGIN')),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+
+-- ========================================
+-- CRUD COMPLETO PARA A TABELA usuarios
+-- ========================================
+
+-- CREATE: Inserir novo usuário
+INSERT INTO usuarios (email, senha, nome, perfil)
+VALUES ('novo.usuario@clinica.com', '$2a$10$HASHDA.SENHA.AQUI', 'Nome do Usuário', 'PACIENTE');
+
+-- READ: Listar todos os usuários
+SELECT * FROM usuarios;
+
+-- READ: Buscar usuário por ID
+SELECT * FROM usuarios WHERE id = 1;
+
+-- READ: Buscar usuário por e-mail
+SELECT * FROM usuarios WHERE email = 'admin@clinica.com';
+
+-- READ: Buscar usuários ativos por perfil
+SELECT * FROM usuarios WHERE ativo = true AND perfil = 'PSICOLOGO';
+
+-- UPDATE: Atualizar nome e perfil do usuário
+UPDATE usuarios
+SET nome = 'Novo Nome', perfil = 'RECEPCIONISTA'
+WHERE id = 2;
+
+-- UPDATE: Atualizar senha (deve estar criptografada)
+UPDATE usuarios
+SET senha = '$2a$10$NOVOHASHDA.SENHA'
+WHERE id = 3;
+
+-- UPDATE: Inativar usuário (exclusão lógica)
+UPDATE usuarios
+SET ativo = false
+WHERE id = 3;
+
+-- UPDATE: Reativar usuário
+UPDATE usuarios
+SET ativo = true
+WHERE id = 3;
+
+-- DELETE: Remover usuário permanentemente
+DELETE FROM usuarios WHERE id = 3;
