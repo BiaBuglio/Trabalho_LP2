@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Psicológica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #1cc88a;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-image: linear-gradient(180deg, var(--secondary-color) 10%, #dbe2ef 100%);
+            background-size: cover;
+            min-height: 100vh;
+        }
+        
+        .welcome-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            background: white;
+            transition: transform 0.3s;
+        }
+        
+        .welcome-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+        
+        .welcome-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .user-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="welcome-card p-5 text-center">
+                    <i class="fas fa-brain welcome-icon"></i>
+                    <h1 class="mb-4">Bem-vindo ao Sistema de Consultas Psicológicas</h1>
+                    <p class="lead mb-4">Sistema completo para gestão de pacientes e consultas psicológicas</p>
+                    
+                    <div class="d-flex justify-content-center gap-3" sec:authorize="isAnonymous()">
+                        <a href="/auth/login" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i> Login
+                        </a>
+                        <a href="/auth/cadastro" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i> Cadastre-se
+                        </a>
+                    </div>
+                    
+                    <div sec:authorize="isAuthenticated()">
+                        <div class="d-inline-block user-badge mb-4">
+                            <i class="fas fa-user me-2"></i>
+                            <span sec:authentication="name"></span>
+                        </div>
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <a href="/dashboard" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-tachometer-alt me-2"></i> Painel
+                            </a>
+                            <a href="/auth/logout" class="btn btn-outline-danger btn-lg px-4">
+                                <i class="fas fa-sign-out-alt me-2"></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow">
+                            <div class="card-body text-center">
+                                <i class="fas fa-calendar-check fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Agendamento</h5>
+                                <p class="card-text">Agende consultas de forma rápida e organizada.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Privacidade</h5>
+                                <p class="card-text">Seus dados protegidos com os melhores padrões de segurança.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Relatórios</h5>
+                                <p class="card-text">Acompanhe o progresso dos seus pacientes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
