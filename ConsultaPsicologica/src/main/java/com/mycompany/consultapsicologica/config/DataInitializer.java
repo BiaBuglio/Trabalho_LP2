@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DataInitializer {
-
+//Isso cria o primeiro adm, lembra de fazer com que esse em especifico não seja deletavel
     @Bean
     CommandLineRunner initDatabase(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         return args -> {

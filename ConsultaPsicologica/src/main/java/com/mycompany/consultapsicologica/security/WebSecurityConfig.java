@@ -2,89 +2,82 @@ package com.mycompany.consultapsicologica.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
-
-    private static final String[] PUBLIC_PATHS = {
-        "/",
-        "/home",
-        "/auth/**",
-        "/static/**",
-        "/error",
-        "/webjars/**",
-        "/favicon.ico",
-        "/h2-console/**"
-    };
-
-    private static final String[] ADMIN_PATHS = {
-        "/usuarios/**",
-        "/admin/**"
-    };
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/error",
+                "/favicon.ico",
+                "/js/**",          // liberar scripts
+                "/css/**",         // liberar css
+                "/images/**",      // ajustar conforme sua pasta de imagens (ex: /IMG/**)
+                "/IMG/**",
+                "/h2-console/**"   // liberar console H2
+        );
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_PATHS).permitAll()
-                .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
+            .authorizeHttpRequests(auth -> auth //ai em baixo você pode definir quais caminhos das controller estão livres sem login
+                .requestMatchers("/", "/index", "/auth/login", "/usuario/cadastro", "/usuario/autenticar", "/h2-console/**", "auth/cadastro", "usuarios/salvar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuario/salvar").permitAll()
                 .anyRequest().authenticated()
             )
+            //Configura o login
             .formLogin(form -> form
-                .loginPage("/auth/login")
-                .defaultSuccessUrl("/home", true)
-                .failureUrl("/auth/login?error=true")
+                .loginPage("/auth/login") //pagina de login
+                .loginProcessingUrl("/auth/login")// caminho da função
+                .defaultSuccessUrl("/", true)//a onde será redirecionado quando aprovado
+                .failureUrl("/auth/login?error=true")//tela de erro
                 .permitAll()
             )
+
+            //Configura o logout
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
-                .logoutSuccessUrl("/auth/login?logout")
-                .invalidateHttpSession(true)
+                .logoutUrl("/auth/logout") // caminho do logout
+                .logoutSuccessUrl("/") // a onde será redirecionado quando sair
+                .invalidateHttpSession(true)  // invalida a sessão
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .headers(headers -> headers
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-            )
-            .exceptionHandling(exceptions -> exceptions
-                .accessDeniedPage("/auth/access-denied")
-            );
+            .headers(headers -> headers.frameOptions().sameOrigin())
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider(CustomUserDetailsService customUserDetailsService) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
 }

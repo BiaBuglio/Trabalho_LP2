@@ -67,7 +67,7 @@
                     <i class="fas fa-brain welcome-icon"></i>
                     <h1 class="mb-4">Bem-vindo ao Sistema de Consultas Psicológicas</h1>
                     <p class="lead mb-4">Sistema completo para gestão de pacientes e consultas psicológicas</p>
-                    
+                    <!--mexi em alguns caminhos para consertar-->
                     <div class="d-flex justify-content-center gap-3" sec:authorize="isAnonymous()">
                         <a href="/auth/login" class="btn btn-primary btn-lg px-4">
                             <i class="fas fa-sign-in-alt me-2"></i> Login
@@ -86,9 +86,11 @@
                             <a href="/dashboard" class="btn btn-primary btn-lg px-4">
                                 <i class="fas fa-tachometer-alt me-2"></i> Painel
                             </a>
-                            <a href="/auth/logout" class="btn btn-outline-danger btn-lg px-4">
-                                <i class="fas fa-sign-out-alt me-2"></i> Sair
-                            </a>
+                            <form th:action="@{/auth/logout}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-lg px-4">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Sair
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

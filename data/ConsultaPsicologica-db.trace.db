@@ -1,0 +1,16 @@
+2025-05-28 11:46:22.433249-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-224]
+2025-05-28 11:53:35.832698-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * [*]form USUARIOS"; SQL statement:
+select * form USUARIOS [42000-224]
+2025-05-28 11:53:45.069504-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * [*]form USUARIOS"; SQL statement:
+select * form USUARIOS [42000-224]
+2025-05-28 11:53:45.961410-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * [*]form USUARIOS"; SQL statement:
+select * form USUARIOS [42000-224]
+2025-05-28 11:53:46.407269-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * [*]form USUARIOS"; SQL statement:
+select * form USUARIOS [42000-224]
+2025-05-28 12:40:44.589665-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-224]
