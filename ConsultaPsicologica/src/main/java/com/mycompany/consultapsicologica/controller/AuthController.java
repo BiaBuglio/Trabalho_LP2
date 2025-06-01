@@ -19,12 +19,12 @@ public class AuthController {
         return "auth/login";
     }
 
-    // Método para o cadastro de usuário
+    // O cadastro público agora será processado por UsuarioController.processarCadastroPublico
+    // E o GET para o formulário de cadastro público também será em AuthController
     @GetMapping("/cadastro")
-    public String cadastro(Model model) {
+    public String cadastroPublico(Model model) {
         model.addAttribute("usuario", new Usuario());
-        return "/form";
-
+        return "cadastro/form"; // Este é o formulário de cadastro que será usado publicamente
     }
 
     @GetMapping("/esqueci-senha")

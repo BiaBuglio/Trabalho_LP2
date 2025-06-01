@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Consulta Psicológica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #1cc88a;
+            --danger-color: #e74a3b;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 56px; /* Altura da navbar */
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-dashboard {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .card-dashboard .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e3e6f0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .logout-link {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/dashboard}">
+                <i class="fas fa-brain me-2"></i>Consulta Psicológica
+            </a>
+            <div class="d-flex">
+                <span class="navbar-text text-white me-3">
+                    Bem-vindo, <strong sec:authentication="name">Usuário</strong>!
+                </span>
+                <span class="navbar-text text-white me-3">
+                    Perfil: <strong th:text="${usuarioLogado.perfil.descricao}"></strong>
+                </span>
+                <form th:action="@{/auth/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i> Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex">
+        <div class="sidebar">
+            <div class="list-group list-group-flush">
+                <a th:href="@{/dashboard}" class="list-group-item list-group-item-action py-2 ripple active">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+
+                <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/usuarios}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Gerenciar Usuários</span>
+                </a>
+                <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/psicologos}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-tie fa-fw me-3"></i><span>Gerenciar Psicólogos</span>
+                </a>
+                 <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/pacientes}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-injured fa-fw me-3"></i><span>Gerenciar Pacientes</span>
+                </a>
+                
+                <a th:if="${perfilUsuario == 'PSICOLOGO'}" th:href="@{/consultas/minhas}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-calendar-alt fa-fw me-3"></i><span>Minhas Consultas</span>
+                </a>
+                <a th:if="${perfilUsuario == 'PSICOLOGO'}" th:href="@{/pacientes/meus}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-injured fa-fw me-3"></i><span>Meus Pacientes</span>
+                </a>
+                <a th:if="${perfilUsuario == 'PSICOLOGO'}" th:href="@{/disponibilidade}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-clock fa-fw me-3"></i><span>Minha Disponibilidade</span>
+                </a>
+
+                <a th:if="${perfilUsuario == 'PACIENTE'}" th:href="@{/consultas/agendar}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-calendar-plus fa-fw me-3"></i><span>Agendar Consulta</span>
+                </a>
+                <a th:if="${perfilUsuario == 'PACIENTE'}" th:href="@{/consultas/historico}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-history fa-fw me-3"></i><span>Histórico de Consultas</span>
+                </a>
+                
+                <a th:if="${perfilUsuario == 'RECEPCIONISTA'}" th:href="@{/consultas}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-calendar-alt fa-fw me-3"></i><span>Gerenciar Consultas</span>
+                </a>
+                <a th:if="${perfilUsuario == 'RECEPCIONISTA'}" th:href="@{/pacientes}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-injured fa-fw me-3"></i><span>Gerenciar Pacientes</span>
+                </a>
+                
+                <a th:href="@{/perfil}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-circle fa-fw me-3"></i><span>Meu Perfil</span>
+                </a>
+
+                <form th:action="@{/auth/logout}" method="post" class="mt-auto">
+                    <button type="submit" class="logout-link btn w-100 text-start">
+                        <i class="fas fa-sign-out-alt fa-fw me-3"></i><span>Sair</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="content">
+            <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+
+            <div th:switch="${perfilUsuario}">
+                <div th:case="'ADMIN'">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-dashboard border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Total de Usuários</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalUsuarios}">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    <h2 class="h5 mb-3 text-gray-800">Ações Rápidas (ADMIN)</h2>
+                    <p>Aqui você pode gerenciar os usuários, psicólogos e pacientes do sistema.</p>
+                    <a th:href="@{/usuarios}" class="btn btn-primary me-2"><i class="fas fa-users me-1"></i> Gerenciar Usuários</a>
+                    <a th:href="@{/psicologos}" class="btn btn-primary me-2"><i class="fas fa-user-tie me-1"></i> Gerenciar Psicólogos</a>
+                    <a th:href="@{/pacientes}" class="btn btn-primary"><i class="fas fa-user-injured me-1"></i> Gerenciar Pacientes</a>
+
+                </div>
+                <div th:case="'PSICOLOGO'">
+                    <h2 class="h5 mb-3 text-gray-800">Bem-vindo, Psicólogo <span th:text="${usuarioLogado.nome}"></span>!</h2>
+                    <p>Gerencie seus agendamentos e pacientes.</p>
+                    <div class="alert alert-info">
+                        Em breve: Seu calendário de consultas e atalhos rápidos.
+                    </div>
+                    <a th:href="@{/consultas/minhas}" class="btn btn-primary me-2"><i class="fas fa-calendar-alt me-1"></i> Minhas Consultas</a>
+                    <a th:href="@{/disponibilidade}" class="btn btn-primary"><i class="fas fa-clock me-1"></i> Minha Disponibilidade</a>
+                </div>
+                <div th:case="'PACIENTE'">
+                    <h2 class="h5 mb-3 text-gray-800">Olá, Paciente <span th:text="${usuarioLogado.nome}"></span>!</h2>
+                    <p>Agende suas próximas consultas e visualize seu histórico.</p>
+                    <div class="alert alert-info">
+                        Em breve: Opções para agendar e acompanhar suas consultas.
+                    </div>
+                    <a th:href="@{/consultas/agendar}" class="btn btn-primary me-2"><i class="fas fa-calendar-plus me-1"></i> Agendar Nova Consulta</a>
+                    <a th:href="@{/consultas/historico}" class="btn btn-primary"><i class="fas fa-history me-1"></i> Histórico de Consultas</a>
+                </div>
+                <div th:case="'RECEPCIONISTA'">
+                    <h2 class="h5 mb-3 text-gray-800">Bem-vindo, Recepcionista <span th:text="${usuarioLogado.nome}"></span>!</h2>
+                    <p>Aqui você pode gerenciar agendamentos e pacientes.</p>
+                    <div class="alert alert-info">
+                        Em breve: Ferramentas para agendamento e gerenciamento de pacientes.
+                    </div>
+                    <a th:href="@{/consultas}" class="btn btn-primary me-2"><i class="fas fa-calendar-alt me-1"></i> Gerenciar Consultas</a>
+                    <a th:href="@{/pacientes}" class="btn btn-primary"><i class="fas fa-user-injured me-1"></i> Gerenciar Pacientes</a>
+                </div>
+                <div th:case="*">
+                    <p>Seu perfil não possui um dashboard configurado. Por favor, entre em contato com o administrador.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

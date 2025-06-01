@@ -31,6 +31,13 @@
             padding: 1.5rem;
             border-radius: 15px 15px 0 0;
         }
+        
+        /* Estilos para mensagens de erro */
+        .error-message {
+            color: #dc3545; /* Cor vermelha do Bootstrap para erro */
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -48,33 +55,35 @@
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome Completo</label>
                                 <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+                                <div class="error-message" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="email" class="form-label">E-mail</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="senha" class="form-label">Senha</label>
-                                <input type="password" class="form-control" id="senha" th:field="*{senha}" required>
+                                <input type="password" class="form-control" id="senha" th:field="*{senha}" th:required="${usuario.id == null}">
+                                <div class="error-message" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></div>
                             </div>
                             
                             <div class="mb-4">
                                 <label for="perfil" class="form-label">Perfil</label>
-                                <select class="form-select" th:field="*{perfil}" required>
+                                <select class="form-select" id="perfil" th:field="*{perfil}" required>
                                     <option value="">Selecione um perfil</option>
-                                    <option value="ADMIN">Administrador</option>
-                                    <option value="PSICOLOGO">Psicólogo</option>
-                                    <option value="PACIENTE">Paciente</option>
+                                    <option th:each="p : ${perfis}" th:value="${p}" th:text="${p.descricao}"></option>
                                 </select>
+                                <div class="error-message" th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}"></div>
                             </div>
                             
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-2"></i> Salvar
                                 </button>
-                                <a th:href="@{/}" class="btn btn-secondary">
+                                <a th:href="@{/usuarios}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i> Voltar
                                 </a>
                             </div>

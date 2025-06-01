@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.consultapsicologica.security;
 
 import com.mycompany.consultapsicologica.model.Usuario;
@@ -11,6 +7,8 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List; 
+import java.util.stream.Collectors; 
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,9 +22,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado para o email: " + email));
 
-        return new User(usuario.getEmail(), usuario.getSenha(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        // CRUCIAL: Cria uma lista de GrantedAuthority baseada no perfil do usuário, prefixando com "ROLE_"
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+            new SimpleGrantedAuthority("ROLE_" + usuario.getPerfil().name()) // Usar .name() para obter a String do enum
+        );
+
+        return new User(
+            usuario.getEmail(),
+            usuario.getSenha(),
+            usuario.isAtivo(),       // Habilitar ou desabilitar o usuário com base no campo 'ativo'
+            true,                    // accountNonExpired (sempre true por enquanto)
+            true,                    // credentialsNonExpired (sempre true por enquanto)
+            true,                    // accountNonLocked (sempre true por enquanto)
+            authorities              // As roles do usuário
+        );
     }
 }
