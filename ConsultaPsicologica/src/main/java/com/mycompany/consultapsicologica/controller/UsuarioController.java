@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.mycompany.consultapsicologica.model.Usuario;
 import com.mycompany.consultapsicologica.service.UsuarioService;
 
-
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -29,10 +28,10 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping("")
     public String listarUsuarios(Model model) {
         model.addAttribute("usuarios", usuarioService.listarTodos());
-        return "usuarios/lista";
+        return "usuarios/index";
     }
 
     @GetMapping("/novo")
@@ -57,13 +56,13 @@ public class UsuarioController {
     // Salva um usuario (ou atualiza)
     @PostMapping("/salvar")
     public String salvarUsuario(@Validated @ModelAttribute("usuario") Usuario usuario,
-                                BindingResult result,
-                                RedirectAttributes attributes, Model model) {
+            BindingResult result,
+            RedirectAttributes attributes, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("perfis", Perfil.values());
             return "usuarios/form";
         }
-        
+
         try {
             if (usuario.getId() == null) {
                 usuarioService.criarUsuario(usuario);
@@ -78,7 +77,7 @@ public class UsuarioController {
             model.addAttribute("perfis", Perfil.values()); // Manter perfis para a view
             return "usuarios/form"; // Retornar ao formulário com o erro
         }
-        
+
         return "redirect:/usuarios";
     }
 
@@ -97,17 +96,17 @@ public class UsuarioController {
     // Lidar com o POST do formulário de cadastro público
     @PostMapping("/cadastro")
     public String processarCadastroPublico(@Validated @ModelAttribute("usuario") Usuario usuario,
-                                          BindingResult result,
-                                          RedirectAttributes attributes, Model model) {
+            BindingResult result,
+            RedirectAttributes attributes, Model model) {
         if (result.hasErrors()) {
             // Note: para o cadastro público, não precisamos de "perfis" no Model,
             // pois o campo de perfil não existe no form.html da pasta cadastro.
-            return "cadastro/form"; 
+            return "cadastro/form";
         }
-        
+
         usuario.setPerfil(Perfil.PACIENTE); // Define o perfil como PACIENTE
         usuario.setAtivo(true);
-        
+
         try {
             usuarioService.criarUsuario(usuario);
             attributes.addFlashAttribute("mensagem", "Sua conta foi criada com sucesso! Faça login para continuar.");
