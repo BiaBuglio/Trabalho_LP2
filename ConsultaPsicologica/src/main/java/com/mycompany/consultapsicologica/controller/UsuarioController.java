@@ -117,4 +117,9 @@ public class UsuarioController {
             return "cadastro/form"; // Retornar ao formulário com o erro
         }
     }
+
+    @GetMapping("/error")
+    public String buildingPage() {
+        return "building-page"; // nome do HTML sem .html
+    }
 }

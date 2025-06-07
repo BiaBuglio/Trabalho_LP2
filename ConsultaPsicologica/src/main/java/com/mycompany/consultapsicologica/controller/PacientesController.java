@@ -37,9 +37,9 @@ public class PacientesController {
     @PostMapping("/salvar")
     @PreAuthorize("hasRole('ADMIN') or hasRole('RECEPCIONISTA')")
     public String salvar(@Valid @ModelAttribute("paciente") Paciente paciente,
-                        @Valid @ModelAttribute("usuario") Usuario usuario,
-                        BindingResult result,
-                        RedirectAttributes attributes) {
+            @Valid @ModelAttribute("usuario") Usuario usuario,
+            BindingResult result,
+            RedirectAttributes attributes) {
         if (result.hasErrors()) {
             return "pacientes/form";
         }
@@ -82,5 +82,10 @@ public class PacientesController {
             model.addAttribute("pacientes", pacienteService.listarTodos());
         }
         return "pacientes/lista";
+    }
+
+    @GetMapping("/error")
+    public String buildingPage() {
+        return "building-page"; // nome do HTML sem .html
     }
 }

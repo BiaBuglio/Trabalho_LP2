@@ -12,4 +12,9 @@ public class HomeController {
     public String index() {
         return "home";
     }
+
+    @GetMapping("/error")
+    public String buildingPage() {
+        return "building-page"; // nome do HTML sem .html
+    }
 }

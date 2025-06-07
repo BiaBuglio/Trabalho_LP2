@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicólogos - Consulta Psicológica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #1cc88a;
+            --danger-color: #e74a3b;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 56px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e3e6f0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .btn-icon {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/dashboard}">
+                <i class="fas fa-brain me-2"></i>Consulta Psicológica
+            </a>
+            <div class="d-flex">
+                <span class="navbar-text text-white me-3">
+                    Bem-vindo, <strong sec:authentication="name">Usuário</strong>!
+                </span>
+                <form th:action="@{/auth/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i> Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex">
+        <div class="sidebar">
+            <div class="list-group list-group-flush">
+                <a th:href="@{/dashboard}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
+                </a>
+                <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/usuarios}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-users-cog fa-fw me-3"></i><span>Gerenciar Usuários</span>
+                </a>
+                <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/psicologos}" class="list-group-item list-group-item-action py-2 ripple active">
+                    <i class="fas fa-user-tie fa-fw me-3"></i><span>Gerenciar Psicólogos</span>
+                </a>
+                <a th:if="${perfilUsuario == 'ADMIN' or perfilUsuario == 'RECEPCIONISTA'}" th:href="@{/pacientes}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-injured fa-fw me-3"></i><span>Gerenciar Pacientes</span>
+                </a>
+                <a th:href="@{/perfil}" class="list-group-item list-group-item-action py-2 ripple">
+                    <i class="fas fa-user-circle fa-fw me-3"></i><span>Meu Perfil</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Gerenciar Psicólogos</h1>
+                <a th:href="@{/psicologos/novo}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Novo Psicólogo
+                </a>
+            </div>
+
+            <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${mensagem}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-search me-1"></i>
+                    Buscar Psicólogos
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/psicologos/buscar}" method="get" class="d-flex gap-2">
+                        <input type="text" name="nome" class="form-control search-box" placeholder="Digite o nome do psicólogo...">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i> Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    Lista de Psicólogos
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>CRP</th>
+                                    <th>Telefone</th>
+                                    <th>Especialidades</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="psicologo : ${psicologos}">
+                                    <td th:text="${psicologo.usuario.nome}"></td>
+                                    <td th:text="${psicologo.usuario.email}"></td>
+                                    <td th:text="${psicologo.crp}"></td>
+                                    <td th:text="${psicologo.telefone}"></td>
+                                    <td th:text="${psicologo.especialidades}"></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a th:href="@{/psicologos/editar/{id}(id=${psicologo.id})}" 
+                                               class="btn btn-sm btn-primary btn-icon" 
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form th:action="@{/psicologos/excluir/{id}(id=${psicologo.id})}" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Tem certeza que deseja excluir este psicólogo?');">
+                                                <button type="submit" class="btn btn-sm btn-danger btn-icon" title="Excluir">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(psicologos)}">
+                                    <td colspan="6" class="text-center">Nenhum psicólogo encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

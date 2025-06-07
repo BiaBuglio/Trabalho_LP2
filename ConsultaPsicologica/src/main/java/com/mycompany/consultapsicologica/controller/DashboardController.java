@@ -27,8 +27,8 @@ public class DashboardController {
         // userDetails contém apenas o email (username) e as roles.
         // Para obter o objeto Usuario completo, precisamos buscá-lo pelo email.
         Usuario usuarioLogado = usuarioService.buscarPorEmail(userDetails.getUsername())
-                                    .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado no banco de dados."));
-        
+                .orElseThrow(() -> new RuntimeException("Usuário logado não encontrado no banco de dados."));
+
         model.addAttribute("usuarioLogado", usuarioLogado); // Adiciona o objeto Usuario completo ao modelo
 
         // Lógica para determinar qual parte do dashboard exibir ou quais dados passar
@@ -37,16 +37,24 @@ public class DashboardController {
 
         // Exemplo de como passar dados condicionais
         if (usuarioLogado.getPerfil() == Perfil.ADMIN) {
-            // Futuramente, pode adicionar dados específicos do admin, como contagem de usuários
-             model.addAttribute("totalUsuarios", usuarioService.listarTodos().size());
+            // Futuramente, pode adicionar dados específicos do admin, como contagem de
+            // usuários
+            model.addAttribute("totalUsuarios", usuarioService.listarTodos().size());
         } else if (usuarioLogado.getPerfil() == Perfil.PSICOLOGO) {
             // Dados para psicólogo: próximos agendamentos, lista de pacientes
-            // model.addAttribute("proximosAgendamentos", consultaService.buscarProximosAgendamentos(usuarioLogado));
+            // model.addAttribute("proximosAgendamentos",
+            // consultaService.buscarProximosAgendamentos(usuarioLogado));
         } else if (usuarioLogado.getPerfil() == Perfil.PACIENTE) {
             // Dados para paciente: suas consultas
-            // model.addAttribute("minhasConsultas", consultaService.buscarMinhasConsultas(usuarioLogado));
+            // model.addAttribute("minhasConsultas",
+            // consultaService.buscarMinhasConsultas(usuarioLogado));
         }
-        
+
         return "dashboard"; // Retorna o nome do template Thymeleaf
+    }
+
+    @GetMapping("/error")
+    public String buildingPage() {
+        return "building-page"; // nome do HTML sem .html
     }
 }

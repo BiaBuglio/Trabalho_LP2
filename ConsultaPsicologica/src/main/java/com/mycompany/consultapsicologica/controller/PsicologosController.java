@@ -37,9 +37,9 @@ public class PsicologosController {
     @PostMapping("/salvar")
     @PreAuthorize("hasRole('ADMIN')")
     public String salvar(@Valid @ModelAttribute("psicologo") Psicologo psicologo,
-                        @Valid @ModelAttribute("usuario") Usuario usuario,
-                        BindingResult result,
-                        RedirectAttributes attributes) {
+            @Valid @ModelAttribute("usuario") Usuario usuario,
+            BindingResult result,
+            RedirectAttributes attributes) {
         if (result.hasErrors()) {
             return "psicologos/form";
         }
@@ -87,5 +87,10 @@ public class PsicologosController {
             model.addAttribute("psicologos", psicologoService.listarTodos());
         }
         return "psicologos/lista";
+    }
+
+    @GetMapping("/error")
+    public String buildingPage() {
+        return "building-page"; // nome do HTML sem .html
     }
 }
